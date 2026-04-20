@@ -83,7 +83,8 @@ const dedentLines = (text) => {
  * - remark-math
  * - rehype-katex
  */
-export const Markdown: React.FC<MarkdownProps> = (props) => {
+export const Markdown: React.FC<MarkdownProps> = ({ dedent = true, ...otherProps }) => {
+  const props = { dedent, ...otherProps };
   const textProp =
     props.children && Array.isArray(props.children) ? props.children.join('\n') : props.children;
   const displayText = props.dedent && textProp ? dedentLines(textProp) : textProp;
@@ -103,8 +104,4 @@ export const Markdown: React.FC<MarkdownProps> = (props) => {
       </ReactMarkdown>
     </div>
   );
-};
-
-Markdown.defaultProps = {
-  dedent: true
 };

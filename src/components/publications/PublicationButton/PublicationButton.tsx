@@ -8,6 +8,7 @@ import './PublicationButton.css';
 import { getJournalAndYear } from '../../../utils/publications';
 
 export interface PublicationButtonProps {
+  children?: React.ReactNode;
   /**
    * The ID used to identify this component in Dash callbacks
    */

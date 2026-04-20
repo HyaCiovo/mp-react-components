@@ -5,6 +5,7 @@ import { Wrapper as MenuWrapper, Button, Menu, MenuItem } from 'react-aria-menub
 import { FaAngleDown } from 'react-icons/fa';
 
 interface Props {
+  children?: React.ReactNode;
   id?: string;
   setProps?: (value: any) => any;
   className?: string;

@@ -70,6 +70,7 @@ export default class Scene {
 
   private clock = new THREE.Clock();
   private animationHelper: AnimationHelper | PhononAnimationHelper;
+  private destroyed = false;
 
   private cacheMountBBox(mountNode: Element) {
     this.cachedMountNodeSize = { width: mountNode.clientWidth, height: mountNode.clientHeight };
@@ -169,10 +170,17 @@ export default class Scene {
     // if the scene is configured
     // we defer the initialization of the control to the next event loop to avoid
     // some control events that would trigger unnecessary rendering
-    setTimeout(() => this.configureControls(), 0);
+    setTimeout(() => {
+      if (!this.destroyed) {
+        this.configureControls();
+      }
+    }, 0);
   }
 
   private configureControls() {
+    if (this.destroyed || !this.renderer?.domElement || !this.camera) {
+      return;
+    }
     switch (this.settings.controls) {
       case Control.ORBIT: {
         const controls = new OrbitControls(this.camera, this.renderer.domElement as HTMLElement);
@@ -627,7 +635,7 @@ export default class Scene {
   }
 
   start() {
-    if (!this.frameId) {
+    if (!this.destroyed && !this.frameId) {
       this.frameId = requestAnimationFrame(() => this.animate());
     } else {
       console.warn('Trying to start animation, but it seems an animation loop is already running');
@@ -640,6 +648,9 @@ export default class Scene {
   }
 
   animate() {
+    if (this.destroyed || !this.renderer || !this.scene || !this.camera) {
+      return;
+    }
     this.animationHelper.animate();
 
     //this.controls.update();
@@ -653,6 +664,9 @@ export default class Scene {
   }
 
   renderScene() {
+    if (this.destroyed || !this.renderer || !this.scene || !this.camera || !this.labelRenderer) {
+      return;
+    }
     if (this.renderer instanceof WebGLRenderer) {
       this.renderer.clear();
       this.renderer.setSize(this.cachedMountNodeSize.width, this.cachedMountNodeSize.height);
@@ -796,20 +810,23 @@ export default class Scene {
 
   public removeListener() {
     window.removeEventListener('resize', this.windowListener, false);
-    this.renderer.domElement.removeEventListener('mousemove', this.mouseMoveListener);
-    this.renderer.domElement.removeEventListener('click', this.clickListener);
+    if (this.renderer?.domElement) {
+      this.renderer.domElement.removeEventListener('mousemove', this.mouseMoveListener);
+      this.renderer.domElement.removeEventListener('click', this.clickListener);
+    }
     document.removeEventListener('mousemove', this.mouseTrackballUpdate, false);
   }
 
   // call this when the parent component is destroyed
   public onDestroy() {
+    this.destroyed = true;
     this.computeIdToThree = {};
     this.threeUUIDTojsonObject = {};
     this.removeListener();
     this.debugHelper && this.debugHelper.onDestroy();
-    this.inset.onDestroy();
-    this.controls.dispose();
-    disposeSceneHierarchy(this.scene);
+    this.inset?.onDestroy();
+    this.controls?.dispose?.();
+    this.scene && disposeSceneHierarchy(this.scene);
     // this.scene.dispose();
     if (this.renderer instanceof THREE.WebGLRenderer) {
       this.renderer.forceContextLoss();
@@ -825,7 +842,9 @@ export default class Scene {
       this.renderer.domElement.parentElement.removeChild(this.renderer.domElement);
     }
     // this.renderer.domElement!.parentElement!.removeChild(this.renderer.domElement);
-    this.renderer.domElement = undefined as any;
+    if (this.renderer) {
+      this.renderer.domElement = undefined as any;
+    }
     this.renderer = null as any;
     this.stop();
   }

@@ -4,6 +4,7 @@ import './Modal.css';
 import { useModalContext } from './ModalContextProvider';
 
 interface Props {
+  children?: React.ReactNode;
   /**
    * The ID used to identify this component in Dash callbacks
    */

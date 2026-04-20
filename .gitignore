@@ -4,8 +4,10 @@
 .cache/
 coverage/
 dist*/
+*/dist/
 !dist/index.html
 node_modules/
+*/node_modules/
 *.log
 
 # OS generated files
@@ -40,3 +42,11 @@ archive/
 src/assets/fonts
 src/assets/styles.css
 src/assets/fonts.css
+
+.npmrc
+*/.npmrc
+
+pnpm-lock.yaml
+package-lock.json
+*/package-lock.json
+*/pnpm-lock.yaml

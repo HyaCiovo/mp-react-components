@@ -7,6 +7,7 @@ import { ModalContextProvider, ModalTrigger, Modal } from '../../data-display/Mo
 import { IsArrowless } from '../../../stories/navigation/Dropdown.stories';
 
 interface Props {
+  children?: React.ReactNode;
   className?: string;
   items: NavbarItem[];
   isArrowless?: boolean;
@@ -16,7 +17,8 @@ interface Props {
   displayDot?: boolean;
 }
 
-export const NavbarDropdown: React.FC<Props> = (props) => {
+export const NavbarDropdown: React.FC<Props> = ({ items = [], ...otherProps }) => {
+  const props = { items, ...otherProps };
   const [isActive, setIsActive] = useState(false); /* state for the dropdown menu */
 
   let onClickHandler = () => setIsActive(!isActive);
@@ -147,8 +149,4 @@ export const NavbarDropdown: React.FC<Props> = (props) => {
       </div>
     );
   }
-};
-
-NavbarDropdown.defaultProps = {
-  items: []
 };

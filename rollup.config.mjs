@@ -1,9 +1,5 @@
-// import { createRequire } from 'module';
-// const require = createRequire(import.meta.url);
-// const pkg = require('./package.json');
-
+import { createRequire } from 'module';
 import typescript from 'rollup-plugin-typescript2';
-import pkg from './package.json' with { type: "json" };
 import styles from 'rollup-plugin-styles';
 //import urlPlugin from '@rollup/plugin-url'; we use image instead
 import resolve from 'rollup-plugin-node-resolve';
@@ -12,14 +8,12 @@ import localResolve from 'rollup-plugin-local-resolve';
 import replace from 'rollup-plugin-replace';
 // import { terser } from 'rollup-plugin-terser';
 
+const require = createRequire(import.meta.url);
+const pkg = require('./package.json');
+
 export default {
   input: 'src/index.ts',
   output: [
-    {
-      file: pkg.main,
-      format: 'cjs',
-      sourcemap: true
-    },
     {
       file: pkg.module,
       format: 'es',
@@ -46,9 +40,35 @@ export default {
     localResolve(),
     resolve(),
     typescript({
+      exclude: [
+        '**/*.spec.ts',
+        '**/*.spec.tsx',
+        '**/*.test.ts',
+        '**/*.test.tsx',
+        '**/*.stories.ts',
+        '**/*.stories.tsx',
+        'src/stories/**'
+      ],
       tsconfigDefaults: {},
       tsconfig: 'tsconfig.json',
-      tsconfigOverride: {},
+      tsconfigOverride: {
+        include: ['src/**/*'],
+        exclude: [
+          'src/**/*.spec.ts',
+          'src/**/*.spec.tsx',
+          'src/**/*.test.ts',
+          'src/**/*.test.tsx',
+          'src/**/*.stories.ts',
+          'src/**/*.stories.tsx',
+          'src/stories/**'
+        ],
+        compilerOptions: {
+          declaration: true,
+          declarationDir: 'dist',
+          rootDir: 'src'
+        }
+      },
+      useTsconfigDeclarationDir: true,
       sourceMap: false,
       verbosity: 1 // overrides for debugging
     }),

@@ -260,6 +260,7 @@ export interface ConditionalRowStyle {
 }
 
 export interface SearchUIContainerProps {
+  children?: React.ReactNode;
   /**
    * The ID used to identify this component in Dash callbacks
    */

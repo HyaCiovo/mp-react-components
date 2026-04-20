@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { downloadAs, DownloadType } from '../../data-entry/utils';
 
 interface Props {
+  children?: React.ReactNode;
   id?: string;
   setProps?: (value: any) => any;
   className?: string;

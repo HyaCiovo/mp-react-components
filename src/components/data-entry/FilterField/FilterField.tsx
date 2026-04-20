@@ -6,6 +6,7 @@ import { PublicationButton } from '../../publications/PublicationButton';
 import './FilterField.css';
 
 interface FilterFieldProps {
+  children?: React.ReactNode;
   id?: string;
   className?: string;
   /**

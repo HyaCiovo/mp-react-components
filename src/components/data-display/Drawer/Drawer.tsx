@@ -1,10 +1,11 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import './Drawer.css';
 import { ModalCloseButton } from '../Modal/ModalCloseButton';
 import { useDrawerContext } from './DrawerContextProvider';
 
 export interface EnlargeableProps {
+  children?: React.ReactNode;
   /**
    * A unique ID to use to open and close the drawer in its `DrawerContextProvider`.
    * This id should be passed to the `forDrawerId` prop in a `DrawerTrigger`

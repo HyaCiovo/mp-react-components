@@ -1,12 +1,19 @@
-![](https://github.com/chabb/material-react/workflows/jest_tests/badge.svg)
-![publish-npm](https://github.com/materialsproject/mp-react-components/workflows/publish-npm/badge.svg)
-[![codecov](https://codecov.io/gh/materialsproject/mp-react-components/branch/main/graph/badge.svg)](https://codecov.io/gh/materialsproject/mp-react-components)
-![](https://img.shields.io/npm/v/mat-periodic-table?style=plastic)
-![Test New React components](https://github.com/materialsproject/dash-mp-components/workflows/Test%20New%20React%20components/badge.svg)
-[![Storybook](https://cdn.jsdelivr.net/gh/storybookjs/brand@master/badge/badge-storybook.svg)](https://materialsproject.github.io/mp-react-components/)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-
 This repo contains a set of components for displaying and interacting with material science data. These components provide the building blocks for the interactive components of the Materials Project website.
+
+## This Fork vs. Original Repository
+
+This repository is no longer a byte-for-byte copy of the original `materialsproject/mp-react-components` project. The current fork focuses on package consumption, React 18 host compatibility, and npm distribution validation.
+
+Key differences in this fork:
+
+- The published package name is `@gnosys/mp-react-components`.
+- The package metadata has been modernized for npm consumers, including explicit `main`, `module`, `types`, `exports`, `files`, and `sideEffects` fields.
+- `react` and `react-dom` are treated as peer dependencies for consumers, which is safer for React 18 host projects.
+- Consumer-facing declaration issues in the published package have been fixed, especially around components that accept `children`.
+- A dedicated `react18-smoke` app is used to validate the installed npm package in a React 18 environment, instead of validating only through local source imports or Storybook.
+- Releases in this fork are currently driven by an explicit build -> publish -> smoke-verify workflow, rather than relying only on the original upstream tag-based release automation.
+
+When the README below still references the original Materials Project package name or release flow, prefer the fork-specific notes in this section.
 
 ## Docs and Examples
 
@@ -20,14 +27,14 @@ Clone the mp-react-components repo:
 git clone git@github.com:materialsproject/mp-react-components.git
 ```
 
-Ensure you're using Node.js version 12.x for compatibility.
+Ensure you're using a modern Node.js version. Node 18+ is recommended, and Node 20+ is preferred for local development and package validation.
 If you don't have nvm (Node Version Manager) installed, you can install it using the following command:
 
 ```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 ```
 
-Install and use Node.js version 12.x.
+Install and use Node.js 18+.
 
 ```
 nvm install 18
@@ -46,7 +53,7 @@ From inside the top directory, install the dependencies:
 npm install
 ```
 
-Deploy the app to https://localhost:3000:
+Deploy the app to <https://localhost:3000>:
 
 ```
 npm start
@@ -54,10 +61,10 @@ npm start
 
 ## Installing as a Node Module
 
-Install the latest snapshot of mp-react-components:
+Install the current forked package:
 
 ```
-npm install @materialsproject/mp-react-components@next
+npm install @gnosys/mp-react-components
 ```
 
 ## Developing Components
@@ -144,9 +151,44 @@ To test the fetching behavior of the `SearchUI` components, there is a `mocks` d
 
 ## Deploying to npm
 
-### Release procedures
+### Release Procedures
 
-The project uses Git tags to manage versioning. To trigger a new release, follow these steps:
+The original upstream project used Git tags and CI/CD-based publishing. In this fork, the actively used workflow is a manual package build and publish flow, followed by verification from the `react18-smoke` consumer app.
+
+### Manual Release Workflow Used in This Fork
+
+1. Update the package version in `package.json`.
+
+1. Build the publishable library output:
+
+```
+npm run clean:bundle
+npm run build-publish
+```
+
+1. Optionally inspect the packaged contents locally:
+
+```
+npm pack
+```
+
+1. Publish the package to the configured registry:
+
+```
+npm publish
+```
+
+1. In `react18-smoke`, install the published version and run a production build to validate npm consumption:
+
+```
+cd react18-smoke
+npm install @gnosys/mp-react-components@<VERSION>
+npm run build
+```
+
+### Historical Upstream Tag-Based Procedure
+
+The following notes are preserved as historical context from the original repository workflow:
 
 1. Tag the commit locally:
 
@@ -154,18 +196,18 @@ The project uses Git tags to manage versioning. To trigger a new release, follow
 git tag -a <UPDATED_VERSION> -m "<DESCRIPTION OF CHANGES>"
 ```
 
-2. Push the tag to GitHub:
+1. Push the tag to GitHub:
 
 ```
 git push origin <UPDATED_VERSION>
 ```
 
-3. Finalize the Release: Navigate to the "Releases" tab on GitHub and publish the release based on the new tag. This triggers the CI/CD pipeline to stamp the version into package.json and publish to NPM.
+1. Finalize the Release: Navigate to the "Releases" tab on GitHub and publish the release based on the new tag. This triggers the CI/CD pipeline to stamp the version into package.json and publish to NPM.
 
-To use the latest snapshot, type the following command
+To use the latest published fork package, type the following command
 
 ```
-npm install @materialsproject/mp-react-components@next
+npm install @gnosys/mp-react-components
 ```
 
 ### Manual Release
@@ -189,10 +231,10 @@ Running those commands will tell `NPM` to use your local version of `mp-react-co
  npm link <REACT_MP_HOME>
 ```
 
-However, you can also push to the `main` branch to publish a new snapshot on npm whenever you are ready to start porting and testing your changes in dash-mp-components. Once the new snapshot is published, you will simply need to re-run these commands from your local dash-mp-components repo:
+After publishing a new package version from this fork, you can re-install that version from your local `dash-mp-components` repo using:
 
 ```
-npm install @materialsproject/mp-react-components@next
+npm install @gnosys/mp-react-components@<VERSION>
 npm run build
 ```
 
@@ -216,7 +258,7 @@ Run the story book locally:
 npm run storybook
 ```
 
-You should be able to access the storybook at http://localhost:6006
+You should be able to access the storybook at <http://localhost:6006>
 
 ### Deploy Storybook to GitHub Pages
 
@@ -227,7 +269,7 @@ Stories are defined in `./src/stories`
 npm deploy-storybook
 ```
 
-If successful, the changes will be live at https://materialsproject.github.io/mp-react-components/
+If successful, the changes will be live at <https://materialsproject.github.io/mp-react-components/>
 
 ### Build Tools
 

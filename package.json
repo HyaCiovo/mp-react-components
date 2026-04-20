@@ -1,17 +1,33 @@
 {
-  "name": "@materialsproject/mp-react-components",
+  "name": "@gnosys/mp-react-components",
   "publishConfig": {
     "access": "public"
   },
-  "version": "0.0.0-automated",
-  "description": "Version is managed by Git tags in CI/CD",
-  "main": "index.js",
-  "module": "dist/index.es.js",
+  "version": "0.0.1",
+  "description": "Next generation Materials Project React components based on React 18 and Radix UI",
+  "author": "hyacinth",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "**/*.css",
+    "**/*.less"
+  ],
   "keywords": [],
-  "author": "",
   "license": "ISC",
   "scripts": {
-    "clean:bundle": "rm -rf dist && rm rollup.build.css && rm index.*",
+    "clean:bundle": "rm -rf dist && rm -f rollup.build.css index.*",
     "clean:storybook": "rm -rf out* && rm -rf storybook-static",
     "clean": "npm run clean:bundle && npm run clean:storybook",
     "start": "parcel demo/index.html",
@@ -24,29 +40,25 @@
     "build-storybook": "build-storybook",
     "deploy-storybook": "storybook-to-ghpages"
   },
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
+  },
   "dependencies": {
-    "@babel/preset-typescript": "^7.17.12",
     "@babel/runtime": "^7.17.9",
-    "@types/classnames": "^2.2.11",
     "axios": "^0.21.1",
     "base64-js": "^1.5.1",
-    "bulma": "^0.9.4",
-    "bulma-tooltip": "^3.0.2",
-    "cheerio": "1.0.0-rc.12",
     "classnames": "^2.2.6",
     "d3": "^5.15.0",
     "highlight.js": "^11.0.1",
     "katex": "^0.15.3",
-    "msw": "^0.25.0",
     "path-browserify": "^1.0.1",
     "prop-types": "^15.7.2",
     "qs": "^6.9.4",
     "query-string": "^7.1.1",
-    "react": "^16.14.0",
     "react-aria-menubutton": "^7.0.1",
     "react-collapsible": "^2.8.3",
     "react-data-table-component": "^6.11.6",
-    "react-dom": "^16.14.0",
     "react-graph-vis": "^1.0.5",
     "react-icons": "^4.2.0",
     "react-json-view": "^1.19.1",
@@ -77,6 +89,7 @@
     "@babel/core": "^7.12.10",
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.18.0",
+    "@babel/preset-typescript": "^7.17.12",
     "@parcel/transformer-less": "^2.5.0",
     "@parcel/transformer-sass": "^2.5.0",
     "@rollup/plugin-image": "^2.0.6",
@@ -95,6 +108,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/enzyme": "^3.10.8",
     "@types/enzyme-adapter-react-16": "^1.0.5",
+    "@types/classnames": "^2.2.11",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.9",
     "@types/react-responsive": "^8.0.2",
@@ -108,9 +122,14 @@
     "jsdom": "^16.4.0",
     "less": "^3.13.1",
     "less-loader": "^10.2.0",
+    "bulma": "^0.9.4",
+    "bulma-tooltip": "^3.0.2",
+    "msw": "^0.25.0",
     "parcel-bundler": "^1.12.5",
     "prettier": "^2.6.2",
     "pretty-quick": "^2.0.2",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "resize-observer-polyfill": "^1.5.1",
     "rollup": "^2.70.2",
     "rollup-plugin-local-resolve": "^1.0.7",

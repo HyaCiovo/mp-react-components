@@ -21,11 +21,11 @@ declare const process: any; // via dotenv
 //FIXME
 //This is equivalent to a singleton, i.e, this store is going to be shared amongst ALL the table that use it
 
-interface ElementState {
+export interface ElementState {
   [symbol: string]: boolean;
 }
 
-interface State {
+export interface State {
   disabledElements: ElementState;
   enabledElements: ElementState;
   hiddenElements: ElementState;
@@ -54,9 +54,10 @@ const getDefaultState: () => Readonly<State> = () => ({
  * otherwise return disabledElements to its initial value.
  */
 const getDisabledElements = (state: State, max: number, initialDisabledElements: ElementState) => {
-  if (Object.keys(state.enabledElements).length === max) {
+  const enabledElements = state.enabledElements || {};
+  if (Object.keys(enabledElements).length === max) {
     state.disabledElements = mapArrayToBooleanObject(VALID_ELEMENTS);
-    for (const element in state.enabledElements) {
+    for (const element in enabledElements) {
       delete state.disabledElements[element];
     }
   } else {
@@ -65,13 +66,19 @@ const getDisabledElements = (state: State, max: number, initialDisabledElements:
   return state;
 };
 
+const normalizeElementState = (elements?: ElementState) => elements || {};
+
 export function getPeriodicSelectionStore() {
   let state: State = getDefaultState();
   const state$: Subject<State> = new Subject();
   state$.next(state);
   let maxItemAllowed = 5; // Number.MAX_SAFE_INTEGER;
+  const env =
+    typeof process !== 'undefined' && process.env
+      ? process.env
+      : ({} as Record<string, string | undefined>);
   const observable: Observable<State> =
-    !process.env.DEBUG && !(process.env.NODE_ENV === 'test')
+    !env.DEBUG && !(env.NODE_ENV === 'test')
       ? state$.pipe(shareReplay(1))
       : state$.pipe(
           tap((s) => {
@@ -106,12 +113,13 @@ export function getPeriodicSelectionStore() {
     setForwardChange: (fwdChange) => (state.forwardOuterChange = fwdChange),
     setEnabledElements: (enabledElements: any) => {
       state.lastAction = {} as any;
-      state = { ...state, enabledElements };
+      state = { ...state, enabledElements: normalizeElementState(enabledElements) };
       state = getDisabledElements(state, maxItemAllowed, initialDisabledElements);
       state$.next(state);
     },
     setDisabledElements: (disabledElements: any) =>
-      (state = { ...state, disabledElements }) && state$.next(state),
+      (state = { ...state, disabledElements: normalizeElementState(disabledElements) }) &&
+      state$.next(state),
     clear: () => {
       state = getDefaultState();
       state$.next(state);
@@ -119,7 +127,8 @@ export function getPeriodicSelectionStore() {
     setDetailedElement: (el: string | null) =>
       (state = { ...state, detailedElement: el }) && state$.next(state),
     setHiddenElements: (hiddenElements: any) =>
-      (state = { ...state, hiddenElements }) && state$.next(state),
+      (state = { ...state, hiddenElements: normalizeElementState(hiddenElements) }) &&
+      state$.next(state),
     //TODO(chab) add check to prever unnecessary state mutation
     addEnabledElement: (enabledElement: string) => {
       state.lastAction = {} as any;
@@ -223,7 +232,11 @@ export function useElements(maxElementSelection: number = 10, onStateChange?: an
   const [enabledElements, setEnabled] = React.useState({});
   const [hiddenElements, setHiddenElements] = React.useState({});
   const [lastAction, setLastAction] = React.useState<State['lastAction']>();
-  const { observable, actions } = useContext(PeriodicSelectionContext);
+  const fallbackStore = React.useMemo(() => getPeriodicSelectionStore(), []);
+  const contextStore = useContext(PeriodicSelectionContext);
+  const hasContextActions =
+    typeof (contextStore as any)?.actions?.setMaxSelectionLimit === 'function';
+  const { observable, actions } = hasContextActions ? contextStore : fallbackStore;
 
   React.useEffect(() => {
     actions.setMaxSelectionLimit(maxElementSelection);
@@ -273,7 +286,10 @@ export function useElements(maxElementSelection: number = 10, onStateChange?: an
 
 export function useDetailedElement() {
   const [detailedElement, setDetailedElement] = React.useState('');
-  const { observable } = useContext(PeriodicSelectionContext);
+  const fallbackStore = React.useMemo(() => getPeriodicSelectionStore(), []);
+  const contextStore = useContext(PeriodicSelectionContext);
+  const hasContextObservable = typeof (contextStore as any)?.observable?.subscribe === 'function';
+  const { observable } = hasContextObservable ? contextStore : fallbackStore;
 
   //FIXME(chab) this is a hack for the tests, this situation would not happen in real life
   // No context defined, you need to manage detailed element by yourself

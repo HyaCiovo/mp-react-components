@@ -5,6 +5,7 @@ import { ModalCloseButton } from './ModalCloseButton';
 import { useModalContext } from './ModalContextProvider';
 
 export interface ModalProps {
+  children?: React.ReactNode;
   /**
    * The ID used to identify this component in Dash callbacks
    */

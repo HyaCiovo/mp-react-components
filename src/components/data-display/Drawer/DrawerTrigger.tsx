@@ -1,8 +1,9 @@
 import classNames from 'classnames';
-import React, { ReactNode, useState } from 'react';
+import React from 'react';
 import { useDrawerContext } from './DrawerContextProvider';
 
 interface Props {
+  children?: React.ReactNode;
   /**
    * The ID used to identify this component in Dash callbacks
    */

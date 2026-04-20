@@ -21,3 +21,6 @@ Thumbs.db
 # Storybook files
 out*
 storybook-static
+
+pnpm-lock.yaml
+package-lock.json

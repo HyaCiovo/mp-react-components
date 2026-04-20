@@ -2,8 +2,40 @@ import React from 'react';
 import PropTypes, { InferProps } from 'prop-types';
 import ReactJson from 'react-json-view';
 
-export function JsonView(props: InferProps<typeof JsonView.propTypes>) {
+export function JsonView({
+  src = null,
+  name = false,
+  theme = 'rjv-default',
+  style = {},
+  iconStyle = 'circle',
+  indentWidth = 8,
+  collapsed = false,
+  collapseStringsAfterLength = false,
+  groupArraysAfterLength = 100,
+  enableClipboard = true,
+  displayObjectSize = false,
+  displayDataTypes = false,
+  defaultValue = null,
+  sortKeys = false,
+  validationMessage = 'Validation Error'
+}: InferProps<typeof JsonView.propTypes>) {
   const {
+    src: resolvedSrc,
+    name: resolvedName,
+    theme: resolvedTheme,
+    style: resolvedStyle,
+    iconStyle: resolvedIconStyle,
+    indentWidth: resolvedIndentWidth,
+    collapsed: resolvedCollapsed,
+    collapseStringsAfterLength: resolvedCollapseStringsAfterLength,
+    groupArraysAfterLength: resolvedGroupArraysAfterLength,
+    enableClipboard: resolvedEnableClipboard,
+    displayObjectSize: resolvedDisplayObjectSize,
+    displayDataTypes: resolvedDisplayDataTypes,
+    defaultValue: resolvedDefaultValue,
+    sortKeys: resolvedSortKeys,
+    validationMessage: resolvedValidationMessage
+  } = {
     src,
     name,
     theme,
@@ -19,25 +51,25 @@ export function JsonView(props: InferProps<typeof JsonView.propTypes>) {
     defaultValue,
     sortKeys,
     validationMessage
-  } = props as any;
+  } as any;
 
   return (
     <ReactJson
-      src={src}
-      name={name}
-      theme={theme}
-      style={style}
-      iconStyle={iconStyle}
-      indentWidth={indentWidth}
-      collapsed={collapsed}
-      collapseStringsAfterLength={collapseStringsAfterLength}
-      groupArraysAfterLength={groupArraysAfterLength}
-      enableClipboard={enableClipboard}
-      displayObjectSize={displayObjectSize}
-      displayDataTypes={displayDataTypes}
-      defaultValue={defaultValue}
-      sortKeys={sortKeys}
-      validationMessage={validationMessage}
+      src={resolvedSrc}
+      name={resolvedName}
+      theme={resolvedTheme}
+      style={resolvedStyle}
+      iconStyle={resolvedIconStyle}
+      indentWidth={resolvedIndentWidth}
+      collapsed={resolvedCollapsed}
+      collapseStringsAfterLength={resolvedCollapseStringsAfterLength}
+      groupArraysAfterLength={resolvedGroupArraysAfterLength}
+      enableClipboard={resolvedEnableClipboard}
+      displayObjectSize={resolvedDisplayObjectSize}
+      displayDataTypes={resolvedDisplayDataTypes}
+      defaultValue={resolvedDefaultValue}
+      sortKeys={resolvedSortKeys}
+      validationMessage={resolvedValidationMessage}
       onEdit={(e) => {}}
       onAdd={(a) => {}}
       onDelete={(d) => {}}
@@ -63,23 +95,4 @@ JsonView.propTypes = {
   defaultValue: PropTypes.object,
   sortKeys: PropTypes.bool,
   validationMessage: PropTypes.string
-};
-
-// https://github.com/mac-s-g/react-json-view/blob/39f7b6b2e73a873b974f0801c260d90d76cccdae/index.d.ts
-JsonView.defaultProps = {
-  src: null,
-  name: false,
-  theme: 'rjv-default',
-  style: {},
-  iconStyle: 'circle',
-  indentWidth: 8,
-  collapsed: false,
-  collapseStringsAfterLength: false,
-  groupArraysAfterLength: 100,
-  enableClipboard: true,
-  displayObjectSize: false,
-  displayDataTypes: false,
-  defaultValue: null,
-  sortKeys: false,
-  validationMessage: 'Validation Error'
 };

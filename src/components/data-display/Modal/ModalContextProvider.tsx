@@ -8,6 +8,7 @@ interface ModalState {
 }
 
 export interface ModalContextProviderProps {
+  children?: React.ReactNode;
   /**
    * Dash-assigned callback that should be called whenever any of the
    * properties change
@@ -34,7 +35,13 @@ const ModalContext = React.createContext<ModalState | undefined>(undefined);
  * Wrap a `ModalTrigger` component and a `Modal` component inside a `ModalContextProvider` to render an element (trigger) that
  * will open up a modal. Apply props to the `ModalContextProvider`.
  */
-export const ModalContextProvider: React.FC<ModalContextProviderProps> = (props) => {
+export const ModalContextProvider: React.FC<ModalContextProviderProps> = ({
+  setProps = () => null,
+  active: initialActive = false,
+  forceAction: initialForceAction = false,
+  ...otherProps
+}) => {
+  const props = { setProps, active: initialActive, forceAction: initialForceAction, ...otherProps };
   const [active, setActive] = useState(() => props.active || false);
   const [forceAction, setForceAction] = useState(() => props.forceAction || false);
 
@@ -50,7 +57,7 @@ export const ModalContextProvider: React.FC<ModalContextProviderProps> = (props)
     } else {
       document.documentElement.classList.remove('is-clipped');
     }
-    props.setProps!({ active: active });
+    props.setProps({ active: active });
   }, [active]);
 
   /**
@@ -66,11 +73,6 @@ export const ModalContextProvider: React.FC<ModalContextProviderProps> = (props)
       {props.children}
     </ModalContext.Provider>
   );
-};
-
-ModalContextProvider.defaultProps = {
-  setProps: () => null,
-  active: false
 };
 
 /**

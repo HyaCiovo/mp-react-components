@@ -86,21 +86,26 @@ export interface TooltipProps {
  * The trigger element must have the `data-tip` attribute and set `data-for` to the `id` of the `Tooltip`.
  * See react-tooltip library documentation for more. https://github.com/wwayne/react-tooltip
  */
-export const Tooltip: React.FC<TooltipProps> = (props) => {
-  const { children, className, ...otherProps } = props;
+export const Tooltip: React.FC<TooltipProps> = ({
+  effect = 'solid',
+  delayShow = 350,
+  multiline = true,
+  children,
+  className,
+  ...otherProps
+}) => {
   return (
-    <ReactTooltip className={classNames('mpc-tooltip', className)} {...otherProps}>
-      {props.multiline ? (
+    <ReactTooltip
+      className={classNames('mpc-tooltip', className)}
+      effect={effect}
+      delayShow={delayShow}
+      {...otherProps}
+    >
+      {multiline ? (
         <div style={{ maxWidth: '200px', whiteSpace: 'normal' }}>{children}</div>
       ) : (
         { children }
       )}
     </ReactTooltip>
   );
-};
-
-Tooltip.defaultProps = {
-  effect: 'solid',
-  delayShow: 350,
-  multiline: true
 };

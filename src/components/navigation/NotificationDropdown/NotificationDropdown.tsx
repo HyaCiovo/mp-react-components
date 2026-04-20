@@ -28,7 +28,11 @@ export interface NotificationDropdownProps {
   link?: string;
 }
 
-export const NotificationDropdown: React.FC<NotificationDropdownProps> = (props) => {
+export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
+  items = [],
+  ...otherProps
+}) => {
+  const props = { items, ...otherProps };
   const [isActive, setIsActive] = useState(false); /* state for the dropdown menu */
 
   /* add reference for closing dropdown, if clicked outside then close the dropdown */
@@ -145,10 +149,6 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = (props)
       </div>
     );
   }
-};
-
-NotificationDropdown.defaultProps = {
-  items: []
 };
 
 export default NotificationDropdown;

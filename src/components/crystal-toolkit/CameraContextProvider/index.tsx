@@ -1,1 +1,2 @@
-export { CameraContextProvider, CameraContext, ICameraContext } from './CameraContextProvider';
+export { CameraContextProvider, CameraContext } from './CameraContextProvider';
+export type { ICameraContext } from './CameraContextProvider';

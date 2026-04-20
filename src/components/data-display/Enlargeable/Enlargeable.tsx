@@ -4,6 +4,7 @@ import { FaCompress, FaCompressAlt, FaExpand, FaExpandAlt } from 'react-icons/fa
 import './Enlargeable.css';
 
 export interface EnlargeableProps {
+  children?: React.ReactNode;
   /**
    * The ID used to identify this component in Dash callbacks.
    */

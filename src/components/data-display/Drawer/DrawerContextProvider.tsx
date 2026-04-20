@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 interface DrawerState {
   activeDrawer: string | null;
   setActiveDrawer: (value: any) => any;
+}
+
+interface DrawerContextProviderProps {
+  children?: React.ReactNode;
 }
 
 const DrawerContext = React.createContext<DrawerState | undefined>(undefined);
@@ -11,7 +15,7 @@ const DrawerContext = React.createContext<DrawerState | undefined>(undefined);
  * Wrap a `DrawerTrigger` component and a `Drawer` component inside a `DrawerContextProvider` to render an element (trigger) that
  * will open up a modal. Apply props to the `DrawerContextProvider`.
  */
-export const DrawerContextProvider: React.FC = (props) => {
+export const DrawerContextProvider: React.FC<DrawerContextProviderProps> = (props) => {
   const [activeDrawer, setActiveDrawer] = useState(null);
 
   return (
